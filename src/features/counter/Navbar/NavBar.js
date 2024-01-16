@@ -6,6 +6,7 @@ import {
   ShoppingCartIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
+import { Link } from "react-router-dom";
 
 const navigation = [
   { name: "Dashboard", href: "#", current: true },
@@ -21,7 +22,7 @@ function classNames(...classes) {
 export const NavBar = ({ children }) => {
   return (
     <>
-      <div >
+      <div  >
         <Disclosure as="nav" className="bg-gray-800">
           {({ open }) => (
             <>
@@ -77,6 +78,7 @@ export const NavBar = ({ children }) => {
                     3
                   </span>
                   <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                    <Link to='/cart'>
                     <button
                       type="button"
                       className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -88,6 +90,7 @@ export const NavBar = ({ children }) => {
                         aria-hidden="true"
                       />
                     </button>
+                    </Link>
 
                     {/* Profile dropdown */}
                     <Menu as="div" className="relative ml-3">
