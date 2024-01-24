@@ -20,6 +20,9 @@ export function fetchAllProductsFilter(filter, sort, pagination) {
     }
   }
 
+
+
+
   for (let key in sort) {
     const categoryValues = sort[key];
     queryString += `${key}=${categoryValues}&`;
@@ -38,5 +41,22 @@ export function fetchAllProductsFilter(filter, sort, pagination) {
     const headers = new Headers(response.headers);
     headers.set('X-Total-Count', totalItems);
     resolve({ data: { products: data, totalItems: parseInt(totalItems) }});
+  });
+}
+
+
+export function fetchAllCategories() {
+  return new Promise(async (resolve) => {
+    const response = await fetch("http://localhost:8080/categories");
+    const data = await response.json();
+    resolve({ data });
+  });
+}
+
+export function fetchAllBrands() {
+  return new Promise(async (resolve) => {
+    const response = await fetch("http://localhost:8080/brands");
+    const data = await response.json();
+    resolve({ data });
   });
 }

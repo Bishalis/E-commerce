@@ -11,6 +11,10 @@ import {
   fetchAllProductByFilterAsync,
   selectAllProducts,
   selectTotalItems,
+  selectAllBrands,
+  selectAllCategories,
+  fetchAllBrandsAsync,
+  fetchAllCategoriesAsync
 } from "../ProductListSlice";
 
 import {
@@ -53,113 +57,34 @@ const sortOptions = [
   { name: "High to Low", sort: "price", order: "desc", current: false },
 ];
 
-const filters = [
-  {
-    id: "brand",
-    name: "Brand",
-    options: [
-      { value: "Apple", label: "Apple", checked: false },
-      { value: "Samsung", label: "Samsung", checked: false },
-      { value: "OPPO", label: "OPPO", checked: false },
-      { value: "Huawei", label: "Huawei", checked: false },
-      {
-        value: "Microsoft Surface",
-        label: "Microsoft Surface",
-        checked: false,
-      },
-      { value: "Infinix", label: "Infinix", checked: false },
-      { value: "HP Pavilion", label: "HP Pavilion", checked: false },
-      {
-        value: "Impression of Acqua Di Gio",
-        label: "Impression of Acqua Di Gio",
-        checked: false,
-      },
-      { value: "Royal_Mirage", label: "Royal_Mirage", checked: false },
-      {
-        value: "Fog Scent Xpressio",
-        label: "Fog Scent Xpressio",
-        checked: false,
-      },
-      { value: "Al Munakh", label: "Al Munakh", checked: false },
-      { value: "Lord - Al-Rehab", label: "Lord  AlRehab", checked: false },
-      { value: "L'Oreal Paris", label: "L'Oreal Paris", checked: false },
-      { value: "Hemani Tea", label: "Hemani Tea", checked: false },
-      { value: "Dermive", label: "Dermive", checked: false },
-      {
-        value: "ROREC White Rice",
-        label: "ROREC White Rice",
-        checked: false,
-      },
-      { value: "Fair & Clear", label: "Fair & Clear", checked: false },
-      { value: "Saaf & Khaas", label: "Saaf & Khaas", checked: false },
-      {
-        value: "Bake Parlor Big",
-        label: "Bake Parlor Big",
-        checked: false,
-      },
-      {
-        value: "Baking Food Items",
-        label: "Baking Food Items",
-        checked: false,
-      },
-      { value: "fauji", label: "fauji", checked: false },
-      { value: "Dry Rose", label: "Dry Rose", checked: false },
-      { value: "Boho Decor", label: "Boho Decor", checked: false },
-      { value: "Flying Wooden", label: "Flying Wooden", checked: false },
-      { value: "LED Lights", label: "LED Lights", checked: false },
-      { value: "luxury palace", label: "luxury palace", checked: false },
-      { value: "Golden", label: "Golden", checked: false },
-    ],
-  },
-  {
-    id: "category",
-    name: "Category",
-    options: [
-      { value: "smartphones", label: "smartphones", checked: false },
-      { value: "laptops", label: "laptops", checked: false },
-      { value: "fragrances", label: "fragrances", checked: false },
-      { value: "skincare", label: "skincare", checked: false },
-      { value: "groceries", label: "groceries", checked: false },
-      {
-        value: "home-decoration",
-        label: "home decoration",
-        checked: false,
-      },
-      { value: "furniture", label: "furniture", checked: false },
-      { value: "tops", label: "tops", checked: false },
-      { value: "womens-dresses", label: "womens dresses", checked: false },
-      { value: "womens-shoes", label: "womens shoes", checked: false },
-      { value: "mens-shirts", label: "mens shirts", checked: false },
-      { value: "mens-shoes", label: "mens shoes", checked: false },
-      { value: "mens-watches", label: "mens watches", checked: false },
-      { value: "womens-watches", label: "womens watches", checked: false },
-      { value: "womens-bags", label: "womens bags", checked: false },
-      {
-        value: "womens-jewellery",
-        label: "womens jewellery",
-        checked: false,
-      },
-      { value: "sunglasses", label: "sunglasses", checked: false },
-      { value: "automotive", label: "automotive", checked: false },
-      { value: "motorcycle", label: "motorcycle", checked: false },
-      { value: "lighting", label: "lighting", checked: false },
-    ],
-  },
-];
+
 
 function classNames(...classes) {
   return classes.filter(Boolean).join("");
 }
-
 export default function ProductList() {
   const dispatch = useDispatch();
   const totalItems = useSelector(selectTotalItems);
+  const brands = useSelector(selectAllBrands);
+  const categories = useSelector(selectAllCategories);
   const [filter, setFilter] = useState({});
   const [sort, setSort] = useState({});
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [page, setPage] = useState(1);
   const products = useSelector(selectAllProducts);
+  const filters = [
 
+    {
+      id: "category",
+      name: "Category",
+      options: categories,
+    },
+    {
+      id: "brand",
+      name: "Brand",
+      options: brands,
+    }
+  ];
   const handleFilter = (e, section, option) => {
     const newFilter = { ...filter };
     if (e.target.checked) {
@@ -179,9 +104,8 @@ export default function ProductList() {
   };
 
   const handleSort = (e, option) => {
-    console.log(e)
-    const newSort = { _sort: option.sort, _order: option.order };
-    setSort(newSort);
+    const sort = { _sort: option.sort };
+    setSort(sort);
   };
 
   const handlePage = (page) => {
@@ -190,12 +114,17 @@ export default function ProductList() {
 
   useEffect(() => {
     const pagination = { _page: page, _limit: ITEMS_PER_PAGE };
-    dispatch(fetchAllProductByFilterAsync( {filter, sort, pagination} ));
+    dispatch(fetchAllProductByFilterAsync({ filter, sort, pagination }));
   }, [dispatch, filter, sort, page]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [totalItems, sort]);
+
   useEffect(()=>{
-     setPage(1)
-  },[totalItems ,sort])
+    dispatch(fetchAllBrandsAsync())
+    dispatch(fetchAllCategoriesAsync())
+  },[])
 
   return (
     <div>
@@ -206,6 +135,7 @@ export default function ProductList() {
             mobileFiltersOpen={mobileFiltersOpen}
             setMobileFiltersOpen={setMobileFiltersOpen}
             handleFilter={handleFilter}
+            filters={filters}
           />
 
           <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -290,10 +220,10 @@ export default function ProductList() {
 
               <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                 {/*desktop Filters */}
-                <DesktopFilter handleFilter={handleFilter} />
+                <DesktopFilter handleFilter={handleFilter} filters={filters}/>
 
                 {/* Product grid */}
-                <ProductGrid products={products}/>
+                <ProductGrid products={products} />
               </div>
             </section>
             {/* pagination section */}
@@ -315,6 +245,7 @@ function MobileFilter({
   mobileFiltersOpen,
   setMobileFiltersOpen,
   handleFilter,
+  filters
 }) {
   return (
     <Transition.Root show={mobileFiltersOpen} as={Fragment}>
@@ -431,7 +362,7 @@ function MobileFilter({
   );
 }
 
-function ProductGrid({products}) {
+function ProductGrid({ products }) {
   return (
     <div className="lg:col-span-3">
       <div className="bg-white">
@@ -489,7 +420,7 @@ function ProductGrid({products}) {
   );
 }
 
-function Pagination({ handlePage, page, setPage, totalItems  }) {
+function Pagination({ handlePage, page, setPage, totalItems }) {
   return (
     <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
       <div className="flex flex-1 justify-between sm:hidden">
@@ -517,7 +448,7 @@ function Pagination({ handlePage, page, setPage, totalItems  }) {
             <span className="font-medium">
               {page * ITEMS_PER_PAGE > totalItems
                 ? totalItems
-                : page * ITEMS_PER_PAGE }
+                : page * ITEMS_PER_PAGE}
             </span>{" "}
             of <span className="font-medium">{totalItems}</span> results
           </p>
@@ -538,20 +469,22 @@ function Pagination({ handlePage, page, setPage, totalItems  }) {
 
             {Array.from({ length: Math.ceil(totalItems / ITEMS_PER_PAGE) }).map(
               (el, index) => {
-                return(
+                return (
                   <div
                     key={index}
                     onClick={(e) => handlePage(index + 1)}
                     aria-current="page"
                     className={`relative z-10 inline-flex items-center cursor-pointer text-gray-400${
-                      index + 1 === page ? " bg-indigo-600 text-white" : "text-gray-400"
+                      index + 1 === page
+                        ? " bg-indigo-600 text-white"
+                        : "text-gray-400"
                     } px-4 py-2 text-sm font-semibold  focus:z-20
                  focus-visible:outline focus-visible:outline-2 
                  focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
                   >
                     {index + 1}
                   </div>
-                )
+                );
               }
             )}
 
@@ -569,7 +502,7 @@ function Pagination({ handlePage, page, setPage, totalItems  }) {
   );
 }
 
-function DesktopFilter({ handleFilter }) {
+function DesktopFilter({ handleFilter ,filters}) {
   return (
     <form className="hidden lg:block">
       <h3 className="sr-only">Categories</h3>
