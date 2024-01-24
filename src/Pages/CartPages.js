@@ -1,5 +1,5 @@
 import React from 'react'
-import { Cart } from '../features/counter/Cart/Cart'
+import { Cart } from '../features/Cart/Cart.js'
 
 export const CartPages = () => {
   return (

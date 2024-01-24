@@ -1,5 +1,4 @@
 import React from "react";
-import { Counter } from "./features/counter/Counter/Counter";
 import "./App.css";
 import Home from "./Pages/Home";
 import { SignInPage } from "./Pages/SignInPage";

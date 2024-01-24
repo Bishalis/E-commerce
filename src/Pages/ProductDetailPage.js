@@ -1,10 +1,10 @@
 import React from 'react'
-import { ProductDetails } from '../features/counter/product-list/Components/ProductDetails'
+import { ProductDetails } from '../features/product-list/Components/ProductDetails'
 
 export const ProductDetailPage = () => {
   return (
     <div>
-        <ProductDetailPage/>
+        <ProductDetails/>
     </div>
   )
 }

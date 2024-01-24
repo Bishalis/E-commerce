@@ -1,5 +1,5 @@
 import React from 'react'
-import { SignUp } from '../features/counter/auth/SignUp'
+import { SignUp } from '../features/auth/SignUp'
 
 export const SignUpPage = () => {
   return (
