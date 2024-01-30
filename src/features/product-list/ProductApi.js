@@ -3,9 +3,21 @@ export function fetchAllProducts() {
   return new Promise(async (resolve) => {
     const response = await fetch("http://localhost:8080/products");
     const data = await response.json();
+    console.log(data)
     resolve({ data });
   });
 }
+
+
+export function fetchProductById(id) {
+  return new Promise(async (resolve) => {
+    const response = await fetch("http://localhost:8080/products/"+id);
+    const data = await response.json();
+    console.log(data)
+    resolve({ data });
+  });
+}
+
 
 export function fetchAllProductsFilter(filter, sort, pagination) {
   //filter   = {'catrgory': ['smartphone', laptops]}

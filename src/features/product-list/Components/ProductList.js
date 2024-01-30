@@ -52,9 +52,9 @@ import { ITEMS_PER_PAGE } from "../../../app/constants";
 // ];
 
 const sortOptions = [
-  { name: "Best Rating", sort: "rating", order: "desc", current: false },
-  { name: "Low to High", sort: "price", order: "asc", current: false },
-  { name: "High to Low", sort: "price", order: "desc", current: false },
+  { name: "Best Rating", sort: "rating,-views",  current: false },
+  { name: "Low to High", sort: "price,views",  current: false },
+  { name: "High to Low", sort: "price,-views",  current: false },
 ];
 
 
@@ -104,7 +104,7 @@ export default function ProductList() {
   };
 
   const handleSort = (e, option) => {
-    const sort = { _sort: option.sort };
+    const sort = { _sort: option.sort  };
     setSort(sort);
   };
 
@@ -369,7 +369,7 @@ function ProductGrid({ products }) {
         <div className="mx-auto max-w-2xl px-4  sm:px-6  lg:max-w-max lg:px-0 ">
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 md:grid-cols-2 lg:grid-cols-3 xl:gap-x-8 md:mx-0">
             {products.map((product) => (
-              <Link to="product-detail" key={product.id}>
+              <Link to={`/product-detail/${product.id}`} key={product.id}>
                 <div
                   key={product.id}
                   className="group relative border-solid border-2 p-3 shadow-xl"
