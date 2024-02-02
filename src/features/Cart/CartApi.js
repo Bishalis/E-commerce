@@ -42,3 +42,30 @@ export function fetchItemsByUserId(userId) {
     resolve({ data});
   });
 }
+
+
+export  function  deleteItemsFromCard(itemId) {
+  return new Promise(async (resolve) =>{
+    const response = await fetch('http://localhost:8080/cart/'+itemId,{
+      method:'DELETE',
+      body:JSON.stringify(itemId),
+      headers:{'Content-type':'application/json'}
+    })
+    const data = await response.json()
+    resolve({data})
+});
+}
+
+
+export  function  resetCart(userId) {
+  return new Promise(async (resolve)=>{
+    const response =await fetchItemsByUserId(userId)
+    const items = response.data;
+    console.log("items"+items)
+    for(let item of items){
+      await deleteItemsFromCard(item.id)
+    }
+    resolve({status:'success'})
+  })
+}
+

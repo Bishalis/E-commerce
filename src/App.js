@@ -11,6 +11,10 @@ import Protected from "./features/auth/Protected";
 import { useDispatch, useSelector } from "react-redux";
 import { selectLoggedInUser } from "./features/auth/authSlice";
 import { fetchItemsByUserIdAsync } from "./features/Cart/CartSlice";
+import PageNotFound from "./Pages/404";
+import OrderSuccessPage from "./Pages/Order-successPage";
+import { UserOrders } from "./features/user/components/UserOrder";
+import UserOrderPage from "./Pages/UserOrderPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -51,6 +55,12 @@ function App() {
               </Protected>
             }
           />
+
+          <Route path="/order-success/:id" element={<OrderSuccessPage />} />
+
+          <Route path="/order" element={<UserOrderPage/>} />
+
+          <Route path="*" element={<PageNotFound></PageNotFound>} />
         </Routes>
       </BrowserRouter>
     </>

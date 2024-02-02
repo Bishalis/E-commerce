@@ -5,7 +5,6 @@ import { incrementAsync, selectError, selectLoggedInUser } from "./authSlice";
 import { Link, Navigate } from "react-router-dom";
 import { checkUserAsync } from "./authSlice";
 
-
 export function Login() {
   // const count = useSelector(selectCount);
   const dispatch = useDispatch();
@@ -16,7 +15,7 @@ export function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-console.log(errors)
+  console.log(errors);
   return (
     <div>
       {user && <Navigate to="/" replace={true} />}
@@ -38,7 +37,11 @@ console.log(errors)
             className="space-y-6"
             onSubmit={handleSubmit((data) => {
               dispatch(
-                checkUserAsync({ email: data.email, password: data.password })
+                checkUserAsync({
+                  email: data.email,
+                  password: data.password,
+                  addresses:[],
+                })
               );
               console.log(data);
             })}
@@ -79,12 +82,11 @@ console.log(errors)
                   Password
                 </label>
                 <div className="text-sm">
-                  <a
-                    href="#"
+                  <p
                     className="font-semibold text-indigo-600 hover:text-indigo-500"
                   >
                     Forgot password?
-                  </a>
+                  </p>
                 </div>
               </div>
               <div className="mt-2">
@@ -119,14 +121,14 @@ console.log(errors)
             </div>
           </form>
 
-          <p className="mt-10 text-center text-sm text-gray-500">
+          <div className="mt-10 text-center text-sm text-gray-500">
             Not a member?{" "}
             <Link to={"/signup"}>
-              <a className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+              <p className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500 inline-block">
                 Create an account
-              </a>
+              </p>
             </Link>
-          </p>
+          </div>
         </div>
       </div>
     </div>

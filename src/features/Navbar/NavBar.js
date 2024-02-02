@@ -17,8 +17,8 @@ const navigation = [
 
 const userNavigation = [
   { name: "Your profile", link: "/" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "/login" },
+  { name: "My Order", link: "/order" },
+  { name: "Sign out", link: "/login" },
 ];
 
 function classNames(...classes) {
@@ -81,7 +81,11 @@ export const NavBar = ({ children }) => {
                       </div>
                     </div>
                   </div>
-                  <span className={`${items.length?'inline-flex':"hidden"} items-center rounded-full mx-16 md:-mx-10 mb-8 z-10 bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10`}>
+                  <span
+                    className={`${
+                      items.length ? "inline-flex" : "hidden"
+                    } items-center rounded-full mx-16 md:-mx-10 mb-8 z-10 bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10`}
+                  >
                     {items.length > 0 ? items.length : ""}
                   </span>
                   <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
@@ -122,46 +126,21 @@ export const NavBar = ({ children }) => {
                         leaveTo="transform opacity-0 scale-95"
                       >
                         <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                          <Menu.Item>
-                            {({ active }) => (
-                              <a
-                                href="#"
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "block px-4 py-2 text-sm text-gray-700"
-                                )}
-                              >
-                                Your Profile
-                              </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item>
-                            {({ active }) => (
-                              <a
-                                href="#"
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "block px-4 py-2 text-sm text-gray-700"
-                                )}
-                              >
-                                Settings
-                              </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item>
-                            {({ active }) => (
-                              <Link to={"/login"}>
-                                <a
+                          {userNavigation.map((item) => (
+                            <Menu.Item key={item.name}>
+                              {({ active }) => (
+                                <Link
+                                  to={item.link}
                                   className={classNames(
                                     active ? "bg-gray-100" : "",
                                     "block px-4 py-2 text-sm text-gray-700"
                                   )}
                                 >
-                                  Sign out
-                                </a>
-                              </Link>
-                            )}
-                          </Menu.Item>
+                                  {item.name}
+                                </Link>
+                              )}
+                            </Menu.Item>
+                          ))}
                         </Menu.Items>
                       </Transition>
                     </Menu>
