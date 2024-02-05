@@ -18,6 +18,8 @@ import UserOrderPage from "./Pages/UserOrderPage";
 import { UserProfile } from "./features/user/components/UserProfile";
 import UserProfilePage from "./Pages/UserProfilePage";
 import { fetchLoggedInUserAsync } from "./features/user/UserSlice";
+import { LogOut } from "./features/auth/LogOut";
+import ForgetPasswordPage from "./Pages/ForgetPasswordPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -64,8 +66,10 @@ function App() {
 
           <Route path="/order" element={<UserOrderPage/>} />
           <Route path="/profile" element={<UserProfilePage/>} />
+          <Route path="/logout" element={<LogOut/>} />
 
 
+          <Route path="/forget-password" element={<ForgetPasswordPage></ForgetPasswordPage>} />
           <Route path="*" element={<PageNotFound></PageNotFound>} />
         </Routes>
       </BrowserRouter>

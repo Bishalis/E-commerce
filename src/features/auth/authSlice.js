@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { checkUsers } from "./authApi";
+import { checkUsers, signOut } from "./authApi";
 import { updateUser } from "../user/UserApi";
 import { createUsers } from "./authApi";
+import { SignInPage } from "../../Pages/SignInPage";
 
 const initialState = {
   error: null,
@@ -26,6 +27,17 @@ export const updateUserAsync = createAsyncThunk(
     return response.data;
   }
 );
+
+export const signOutAsync = createAsyncThunk(
+  "users/signOut",
+  async (loginInfo) => {
+    const response = await signOut(loginInfo);
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
+
+
 
 export const checkUserAsync = createAsyncThunk(
   "users/checkUsers",
@@ -85,6 +97,13 @@ export const counterSlice = createSlice({
       .addCase(updateUserAsync.fulfilled, (state, action) => {
         state.status = "idle";
         state.loggedInUser = action.payload;
+      })
+      .addCase(signOutAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(signOutAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.loggedInUser = null;
       })
   },
 });

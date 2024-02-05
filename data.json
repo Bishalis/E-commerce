@@ -2139,6 +2139,16 @@
           "city": "Dawes Point",
           "state": "NSw",
           "pinCode": "33"
+        },
+        {
+          "name": "Neymar",
+          "email": "demo@gmail.com",
+          "phone": "9860439767",
+          "street-address": "",
+          "city": "Dawes Point",
+          "state": "NSw",
+          "pinCode": "33",
+          "street": "brasil"
         }
       ],
       "password": "Demo@12345"
@@ -2158,7 +2168,7 @@
           "name": "Bishal",
           "email": "demo@gmail.com",
           "phone": "9818920846",
-          "street-address": "wollicreek",
+          "street": "wollicreek",
           "city": "Dawes Point",
           "state": "NSw",
           "pinCode": "33"
@@ -2213,6 +2223,26 @@
       ],
       "quantity": 1,
       "user": "a4e3"
+    },
+    {
+      "id": "339a",
+      "title": "MacBook Pro",
+      "description": "MacBook Pro 2021 with mini-LED display may launch between September, November",
+      "price": 1749,
+      "discountPercentage": 11.02,
+      "rating": 4.57,
+      "stock": 83,
+      "brand": "Apple",
+      "category": "laptops",
+      "thumbnail": "https://cdn.dummyjson.com/product-images/6/thumbnail.png",
+      "images": [
+        "https://cdn.dummyjson.com/product-images/6/1.png",
+        "https://cdn.dummyjson.com/product-images/6/2.jpg",
+        "https://cdn.dummyjson.com/product-images/6/3.png",
+        "https://cdn.dummyjson.com/product-images/6/4.jpg"
+      ],
+      "quantity": 1,
+      "user": "828d"
     }
   ],
   "order": [
@@ -2271,7 +2301,7 @@
             "name": "Bishal",
             "email": "demo@gmail.com",
             "phone": "9818920846",
-            "street-address": "wollicreek",
+            "street": "wollicreek",
             "city": "Dawes Point",
             "state": "NSw",
             "pinCode": "33"
@@ -2336,7 +2366,7 @@
             "name": "trevor ",
             "email": "demo@gmail.com",
             "phone": "9818920846",
-            "street-address": "sdddsdfsd",
+            "street": "sdddsdfsd",
             "city": "Dawes Point",
             "state": "eeeevvv",
             "pinCode": " 7575"
@@ -2345,7 +2375,7 @@
             "name": "Bishal",
             "email": "test@gmail.com",
             "phone": "9860439767",
-            "street-address": "sdddsdfsd",
+            "street": "sdddsdfsd",
             "city": "ssdsd",
             "state": "eeeevvv",
             "pinCode": "33"
@@ -2391,7 +2421,7 @@
             "name": "Bishal",
             "email": "demo@gmail.com",
             "phone": "9818920846",
-            "street-address": "sdddsdfsd",
+            "street": "sdddsdfsd",
             "city": "Dawes Point",
             "state": "NSw",
             "pinCode": " 7575"
@@ -2400,7 +2430,7 @@
             "name": "Bishal",
             "email": "demo@gmail.com",
             "phone": "9860439767",
-            "street-address": "wollicreek",
+            "street": "wollicreek",
             "city": "Dawes Point",
             "state": "NSw",
             "pinCode": "33"

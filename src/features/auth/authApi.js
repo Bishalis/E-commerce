@@ -12,6 +12,14 @@ export  function  createUsers(userData) {
 }
 
 
+export function signOut(userId){
+  return new Promise(async (resolve)=>{
+    //Todo on server we will resolve our session info
+    resolve({data:'success'});
+  })
+}
+
+
 
 
 // A mock function to mimic making an async request for data
