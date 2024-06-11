@@ -1,9 +1,6 @@
 import React, { useEffect } from "react";
-import {
-  fetchAllProductByIdAsync,
-  selectProductById,
-  selectProductStatus,
-} from "../ProductListSlice";
+
+import { fetchAllProductByIdAsync ,selectProductById} from "../../product-list/ProductListSlice";
 
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -13,14 +10,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCartAsync, selectItems } from "../../Cart/CartSlice";
 import { Link } from "react-router-dom";
 import { discountedPrice } from "../../../app/constants";
-import { toast } from "react-toastify";
-import { Grid } from "react-loader-spinner";
 
 const colors = [
   { name: "White", class: "bg-white", selectedClass: "ring-gray-400" },
   { name: "Gray", class: "bg-gray-200", selectedClass: "ring-gray-400" },
   { name: "Black", class: "bg-gray-900", selectedClass: "ring-gray-900" },
 ];
+
 const sizes = [
   { name: "XXS", inStock: false },
   { name: "XS", inStock: true },
@@ -42,14 +38,13 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const ProductDetails = () => {
+export const AdminDetails = () => {
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
   const product = useSelector(selectProductById);
   const dispatch = useDispatch();
   const params = useParams();
   const items = useSelector(selectItems);
-  const status = useSelector(selectProductStatus)
 
   const handleCart = (e) => {
     e.preventDefault();
@@ -59,18 +54,8 @@ export const ProductDetails = () => {
         product: product.id,
         quantity: 1,
       };
-      if (selectedColor) {
-        newItem.color = selectedColor;
-      }
-      if (selectedSize) {
-        newItem.size = selectedSize;
-      }
-      toast.success("added to cart");
-      dispatch(addToCartAsync(newItem));
-    }else{
-      toast.warning("Item already added")
-    }
-  };
+    dispatch(addToCartAsync(newItem));
+  }};
 
   useEffect(() => {
     dispatch(fetchAllProductByIdAsync(params.id));
@@ -78,18 +63,6 @@ export const ProductDetails = () => {
 
   return (
     <div className="bg-white">
-      {status === "loading" ? (
-        <Grid
-          height="80"
-          width="80"
-          color="rgb(79, 70, 229) "
-          ariaLabel="grid-loading"
-          radius="12.5"
-          wrapperStyle={{}}
-          wrapperClass=""
-          visible={true}
-        />
-      ) : null}
       {product && (
         <div className="pt-6">
           <nav aria-label="Breadcrumb">
@@ -178,7 +151,7 @@ export const ProductDetails = () => {
             <div className="mt-4 lg:row-span-3 lg:mt-0">
               <h2 className="sr-only">Product information</h2>
               <p className="text-3xl tracking-tight text-gray-900">
-                ${discountedPrice(product)}
+                {discountedPrice(product)}
               </p>
 
               {/* Reviews */}
@@ -327,15 +300,15 @@ export const ProductDetails = () => {
                     </div>
                   </RadioGroup>
                 </div>
-                <Link to="/">
-                  <button
-                    onClick={handleCart}
-                    type="submit"
-                    className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  >
-                    Add to bag
-                  </button>
-                </Link>
+               <Link to="/">
+                <button
+                  onClick={handleCart}
+                  type="submit"
+                  className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Add to bag
+                </button>
+               </Link>
               </form>
             </div>
 

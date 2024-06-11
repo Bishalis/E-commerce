@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { selectLoggedInUser, createUserAsync } from "./authSlice";
+import { selectloggedInUser, createUserAsync } from "./authSlice";
 import { Link } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 
@@ -13,7 +13,7 @@ export const SignUp = () => {
     watch,
     formState: { errors },
   } = useForm();
-  const user = useSelector(selectLoggedInUser);
+  const user = useSelector(selectloggedInUser);
   console.log(errors);
   return (
     <div>
@@ -40,6 +40,7 @@ export const SignUp = () => {
                   email: data.email,
                   password: data.password,
                   addresses: [],
+                  role:'user'
                 })
               );
               console.log(data);

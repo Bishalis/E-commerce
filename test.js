@@ -1291,7 +1291,7 @@ const products = [
     {
       "id": 71,
       "title": "Women Shoulder Bags",
-      "description": "LouisWill Women Shoulder Bags Long Clutches Cross Body Bags Phone Bags PU Leather Hand Bags Large Capacity Card Holders Zipper Coin Purses Fashion Crossbody Bags for Girls Ladies",
+      "description": "LouisWill Women Shoulder Bags Long Clutches Cross Body Bags Phone Bags PU Leather Hand Bags Large Capacity Cart Holders Zipper Coin Purses Fashion Crossbody Bags for Girls Ladies",
       "price": 46,
       "discountPercentage": 14.65,
       "rating": 4.71,

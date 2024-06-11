@@ -1,17 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { checkUsers, signOut } from "./authApi";
-import { updateUser } from "../user/UserApi";
+import { checkAuth, loginUser, signOut } from "./authApi";
 import { createUsers } from "./authApi";
-import { SignInPage } from "../../Pages/SignInPage";
 
 const initialState = {
   error: null,
   loggedInUser: null,
   status: "idle",
+  userChecked:false,
 };
 
 export const createUserAsync = createAsyncThunk(
-  "users/createUsers",
+  "user/createUsers",
   async (userData) => {
     const response = await createUsers(userData);
     // The value we return becomes the `fulfilled` action payload
@@ -19,17 +18,10 @@ export const createUserAsync = createAsyncThunk(
   }
 );
 
-export const updateUserAsync = createAsyncThunk(
-  "users/updateUser",
-  async (update) => {
-    const response = await updateUser(update);
-    // The value we return becomes the `fulfilled` action payload
-    return response.data;
-  }
-);
+
 
 export const signOutAsync = createAsyncThunk(
-  "users/signOut",
+  "user/signOut",
   async (loginInfo) => {
     const response = await signOut(loginInfo);
     // The value we return becomes the `fulfilled` action payload
@@ -39,12 +31,30 @@ export const signOutAsync = createAsyncThunk(
 
 
 
-export const checkUserAsync = createAsyncThunk(
-  "users/checkUsers",
-  async (loginInfo) => {
-    const response = await checkUsers(loginInfo);
-    // The value we return becomes the `fulfilled` action payload
-    return response.data;
+export const loginUserAsync = createAsyncThunk(
+  "user/loginUser",
+  async (loginInfo,{rejectWithValue}) => {
+    try{
+      const response = await loginUser(loginInfo);
+      // The value we return becomes the `fulfilled` action payload
+      return response.data;
+    }catch(error){
+       console.log(error);
+       return rejectWithValue(error)
+    }
+  }
+);
+
+
+export const checkAuthAsync = createAsyncThunk(
+  "user/checkAuth",
+  async () => {
+    try{
+      const response = await checkAuth();
+      return response.data;
+    }catch(error){
+    console.log(error);
+    }
   }
 );
 
@@ -79,25 +89,30 @@ export const counterSlice = createSlice({
         state.status = "idle";
         state.loggedInUser = action.payload;
       })
-      .addCase(checkUserAsync.pending, (state) => {
+      .addCase(checkAuthAsync.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(checkUserAsync.fulfilled, (state, action) => {
+      .addCase(checkAuthAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.loggedInUser = action.payload;
+        state.userChecked = true;
+      })
+      .addCase(checkAuthAsync.rejected, (state, action) => {
+        state.status = "idle";
+        state.userChecked = true;
+      })
+      .addCase(loginUserAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(loginUserAsync.fulfilled, (state, action) => {
         state.status = "idle";
         state.loggedInUser = action.payload;
       })
-      .addCase(checkUserAsync.rejected, (state, action) => {
+      .addCase(loginUserAsync.rejected, (state, action) => {
         state.status = "idle";
-        state.error = action.error;
+        state.error = action.payload;
       })
 
-      .addCase(updateUserAsync.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(updateUserAsync.fulfilled, (state, action) => {
-        state.status = "idle";
-        state.loggedInUser = action.payload;
-      })
       .addCase(signOutAsync.pending, (state) => {
         state.status = "loading";
       })
@@ -105,15 +120,12 @@ export const counterSlice = createSlice({
         state.status = "idle";
         state.loggedInUser = null;
       })
+  
   },
 });
 
-export const { increment } = counterSlice.actions;
-export const selectLoggedInUser = (state) => state.auth.loggedInUser;
-
-// The function below is called a selector and allows us to select a value from
-// the state. Selectors can also be defined inline where they're used instead of
-// in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
+export const selectloggedInUser = (state) => state.auth.loggedInUser;
 export const selectError = (state) => state.auth.error;
+export const selectUserChecked = (state) => state.auth.userChecked;
 
 export default counterSlice.reducer;

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
-import {  selectError, selectLoggedInUser } from "./authSlice";
+import {  selectError, selectloggedInUser } from "./authSlice";
 import { Link } from "react-router-dom";
 
 export const ForgetPassword = () => {
   const dispatch = useDispatch();
   const error = useSelector(selectError);
-  const user = useSelector(selectLoggedInUser);
+  const user = useSelector(selectloggedInUser);
   const {
     register,
     handleSubmit,

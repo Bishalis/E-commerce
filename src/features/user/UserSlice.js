@@ -2,29 +2,28 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 // import { fetchCount } from './counterAPI';
 import {
   fetchLoggedInUser,
-  fetchLoggedInUserOrders,
+  fetchLoggedInOrders,
   updateUser,
 } from "./UserApi";
 
 const initialState = {
-  userOrders: [],
   status: "idle",
   userInfo: null, // this will have more info
 };
 
 export const fetchUserLoggedInOrderAsync = createAsyncThunk(
-  "user/fetchLoggedInUserOrders",
-  async (id) => {
-    const response = await fetchLoggedInUserOrders(id);
+  "user/fetchLoggedInOrders",
+  async () => {
+    const response = await fetchLoggedInOrders();
     // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
 );
 
-export const fetchLoggedInUserAsync = createAsyncThunk(
+export const fetchloggedInUserAsync = createAsyncThunk(
   "user/fetchLoggedInUser",
-  async (id) => {
-    const response = await fetchLoggedInUser(id);
+  async () => {
+    const response = await fetchLoggedInUser();
     // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
@@ -50,7 +49,7 @@ export const counterSlice = createSlice({
       })
       .addCase(fetchUserLoggedInOrderAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.userOrders = action.payload;
+        state.userInfo.orders = action.payload;
       })
 
       .addCase(updateUserAsync.pending, (state) => {
@@ -58,12 +57,12 @@ export const counterSlice = createSlice({
       })
       .addCase(updateUserAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.userOrders = action.payload;
+        state.userInfo = action.payload;
       })
-      .addCase(fetchLoggedInUserAsync.pending, (state) => {
+      .addCase(fetchloggedInUserAsync.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(fetchLoggedInUserAsync.fulfilled, (state, action) => {
+      .addCase(fetchloggedInUserAsync.fulfilled, (state, action) => {
         state.status = "idle";
         state.userInfo = action.payload;
       });
@@ -71,8 +70,7 @@ export const counterSlice = createSlice({
 });
 
 
-export const selectUserOrders = (state) => state.user.userOrders;
-
+export const selectUserOrders = (state) => state.user.userInfo.orders;
 export const selectUserInfo = (state) => state.user.userInfo;
 
 export default counterSlice.reducer;

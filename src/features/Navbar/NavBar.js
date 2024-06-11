@@ -1,4 +1,4 @@
-import React, { children } from "react";
+import React from "react";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import {
@@ -9,15 +9,17 @@ import {
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectItems } from "../Cart/CartSlice";
+import { selectUserInfo } from "../user/UserSlice";
 
 const navigation = [
-  { name: "Dashboard", href: "#", current: true },
-  { name: "Team", href: "#", current: false },
+  { name: "Products", link: "/", user: true },
+  { name: "Products", link: "/admin", admin: true },
+  { name: "Orders", link: "/admin/orders", admin: true },
 ];
 
 const userNavigation = [
   { name: "Your profile", link: "/profile" },
-  { name: "My Order", link: "/order" },
+  { name: "My Order", link: "/my-orders" },
   { name: "Sign out", link: "/login" },
 ];
 
@@ -26,9 +28,11 @@ function classNames(...classes) {
 }
 
 export const NavBar = ({ children }) => {
+  const user = useSelector(selectUserInfo)
   const items = useSelector(selectItems);
   return (
     <>
+    {user &&
       <div>
         <Disclosure as="nav" className="bg-gray-800">
           {({ open }) => (
@@ -54,41 +58,35 @@ export const NavBar = ({ children }) => {
                     </Disclosure.Button>
                   </div>
                   <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                    <div className="flex flex-shrink-0 items-center">
-                      <img
-                        className="h-8 w-auto"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                        alt="Your Company"
-                      />
-                    </div>
                     <div className="hidden sm:ml-6 sm:block">
-                      <div className="flex space-x-4">
+                     {user && <div className="flex space-x-4">
                         {navigation.map((item) => (
-                          <a
-                            key={item.name}
-                            href={item.href}
-                            className={classNames(
-                              item.current
-                                ? "bg-gray-900 text-white"
-                                : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                              "rounded-md px-3 py-2 text-sm font-medium"
-                            )}
+                         item[user.role] ? <Link
+                            key={item.name
+                            }
+                            to={item.link}
+                            className={
+                              classNames(
+                                item.current
+                                  ? "bg-gray-900 text-white"
+                                  : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                                "rounded-md px-3 py-2 text-sm font-medium "
+                              )}
                             aria-current={item.current ? "page" : undefined}
                           >
                             {item.name}
-                          </a>
+                            </Link>:null
                         ))}
-                      </div>
+                      </div>}
                     </div>
                   </div>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                   <span
-                    className={`${
-                      items.length ? "inline-flex" : "hidden"
-                    } items-center rounded-full mx-16 md:-mx-10 mb-8 z-10 bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10`}
+                    className={`${items.length ? "inline-flex" : "hidden"
+                      } items-center rounded-full my-2 -mx-4 mb-8 z-10 bg-red-50 px-2 py-1 text-xs  font-medium text-red-700 ring-1 ring-inset ring-red-600/10`}
                   >
                     {items.length > 0 ? items.length : ""}
                   </span>
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                     <Link to="/cart">
                       <button
                         type="button"
@@ -149,30 +147,31 @@ export const NavBar = ({ children }) => {
               </div>
 
               <Disclosure.Panel className="sm:hidden">
-                <div className="space-y-1 px-2 pb-3 pt-2">
-                  {navigation.map((item) => (
-                    <Disclosure.Button
-                      key={item.name}
-                      as="a"
-                      href={item.href}
-                      className={classNames(
-                        item.current
-                          ? "bg-gray-900 text-white"
-                          : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                        "block rounded-md px-3 py-2 text-base font-medium"
-                      )}
-                      aria-current={item.current ? "page" : undefined}
-                    >
-                      {item.name}
-                    </Disclosure.Button>
-                  ))}
-                </div>
+                {user && <div className="space-y-1 px-2 pb-3 pt-2">
+                        {navigation.map((item) => (
+                         item[user.role] ? <Link
+                            key={item.name
+                            }
+                            to={item.link}
+                            className={
+                              classNames(
+                                item.current
+                                  ? "bg-gray-900 text-white"
+                                  : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                                "rounded-md px-3 py-2 text-sm font-medium "
+                              )}
+                            aria-current={item.current ? "page" : undefined}
+                          >
+                            {item.name}
+                            </Link>:null
+                        ))}
+                      </div>}
               </Disclosure.Panel>
             </>
           )}
         </Disclosure>
         <header className="">{children}</header>
-      </div>
+      </div >}
     </>
   );
 };

@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { addToCart ,fetchItemsByUserId, updateCard,deleteCard, resetCart} from './CartApi';
+import { addToCart ,fetchItemsByUserId, updateCart,deleteCart, resetCart} from './CartApi';
 
 const initialState = {
   value: 0,
   status: 'idle',
   items:[],
+  cartLoaded:false
 };
-
 
 export const addToCartAsync = createAsyncThunk(
   'cart/addToCart',
@@ -17,22 +17,19 @@ export const addToCartAsync = createAsyncThunk(
   }
 );
 
-
-
-
 export const updateItemAsync = createAsyncThunk(
-  'cart/updateCard',
+  'cart/updateCart',
   async (update) => {
-    const response = await updateCard(update);
+    const response = await updateCart(update);
     // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
 );
 
 export const deleteItemAsync = createAsyncThunk(
-  'cart/deleteCard',
+  'cart/deleteCart',
   async (itemId) => {
-    const response = await deleteCard(itemId);
+    const response = await deleteCart(itemId);
     // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
@@ -40,8 +37,8 @@ export const deleteItemAsync = createAsyncThunk(
 
 export const fetchItemsByUserIdAsync = createAsyncThunk(
   'cart/fetchItemsByUserId',
-  async (item) => {
-    const response = await fetchItemsByUserId(item);
+  async () => {
+    const response = await fetchItemsByUserId();
     // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
@@ -49,8 +46,8 @@ export const fetchItemsByUserIdAsync = createAsyncThunk(
 
 export const resetCardAsync = createAsyncThunk(
   'cart/resetCart',
-  async (userId) => {
-    const response = await resetCart(userId);
+  async () => {
+    const response = await resetCart();
     // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
@@ -78,6 +75,12 @@ export const counterSlice = createSlice({
       .addCase(fetchItemsByUserIdAsync.fulfilled, (state, action) => {
         state.status = 'idle';
         state.items = action.payload;
+        state.cartLoaded = true
+      })
+
+      .addCase(fetchItemsByUserIdAsync.rejected, (state) => {
+        state.status = 'idle';
+        state.cartLoaded = true
       })
 
       .addCase(updateItemAsync.pending, (state) => {
@@ -113,6 +116,5 @@ export const counterSlice = createSlice({
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 export const selectItems = (state) => state.cart.items;
-
-
+export const selectCartLoaded = (state) => state.cart.cartLoaded;
 export default counterSlice.reducer;

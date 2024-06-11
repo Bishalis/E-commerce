@@ -5,22 +5,21 @@ import { updateItemAsync, deleteItemAsync } from "../features/Cart/CartSlice";
 import { selectItems } from "../features/Cart/CartSlice";
 import { Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { updateUserAsync } from "../features/auth/authSlice";
+import { selectUserInfo, updateUserAsync } from "../features/user/UserSlice";
+import {} from "../features/auth/authSlice";
 import {
-  checkUserAsync,
-  createUserAsync,
-  selectLoggedInUser,
-} from "../features/auth/authSlice";
-import { addOrderAsync, selectCurrentOrderStatus } from "../features/orders/OrdersSlice";
+  addOrderAsync,
+  selectcurrentOrder,
+} from "../features/orders/OrdersSlice";
+import { discountedPrice } from "../app/constants";
 
 export const Checkout = () => {
   const [open, setOpen] = useState(true);
   // const count = useSelector(selectCount);
   const dispatch = useDispatch();
   const items = useSelector(selectItems);
-
   const totalAmount = items.reduce(
-    (amount, item) => item.price * item.quantity + amount,
+    (amount, item) => Number(discountedPrice(item.product) * item.quantity + amount),
     0
   );
   const totalItems = items.reduce((total, item) => item.quantity + total, 0);
@@ -28,7 +27,7 @@ export const Checkout = () => {
   const handleQuantity = (e, item) => {
     dispatch(updateItemAsync({ ...item, quantity: +e.target.value }));
   };
-  const handleRemove = (e, id) => {
+  const handleRemove = (id) => {
     dispatch(deleteItemAsync(id));
   };
   const {
@@ -38,34 +37,41 @@ export const Checkout = () => {
     formState: { errors },
   } = useForm();
 
-  const user = useSelector(selectLoggedInUser);
+  const user = useSelector(selectUserInfo);
   const [paymentMethod, setPaymentMethod] = useState(null);
-  const [selectedAddresses, setSelectedAddresses] = useState(null);
-  const currentOrder = useSelector(selectCurrentOrderStatus)
+  const [selectedAddress, setSelectedAddresses] = useState(null);
+  const currentOrder = useSelector(selectcurrentOrder);
 
-  const handleAddress = (index) => {
-    setSelectedAddresses(user.addresses[index]);
+  const handleAddress = (e) => {
+    setSelectedAddresses(user.addresses[e.target.value]);
   };
   const handlePayment = (e) => {
     setPaymentMethod(e.target.value);
   };
 
-  const handleOrder = (e) => {
-    const order = {
-      items,
-      totalAmount,
-      totalItems,
-      user,
-      paymentMethod,
-      selectedAddresses,
-      status:'pending'
-    };
-    dispatch(addOrderAsync(order));
+  const handleOrder = () => {
+    if (selectedAddress && paymentMethod) {
+      const order = {
+        items,
+        totalAmount,
+        totalItems,
+        user: user.id,
+        paymentMethod,
+        status: "pending", // other status can be delivered, received.
+        selectedAddress,
+      };
+      dispatch(addOrderAsync(order));
+    }
   };
   return (
     <>
       {!items.length && <Navigate to="/" replace={true} />}
-      {currentOrder && <Navigate to={`/order-success/${currentOrder.id}`} replace={true} /> }
+      {currentOrder && currentOrder.paymentMethod === "cash" && (
+        <Navigate to={`/order-success/${currentOrder.id}`} replace={true} />
+      )}
+      {currentOrder && currentOrder.paymentMethod === "card" && (
+        <Navigate to={`/stripe-checkout`} replace={true} />
+      )}
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
           <div className="lg:col-span-3">
@@ -80,7 +86,6 @@ export const Checkout = () => {
                   })
                 );
 
-                console.log(data);
                 reset();
               })}
             >
@@ -295,14 +300,14 @@ export const Checkout = () => {
                   <div className="flex items-center gap-x-3">
                     <input
                       onChange={handlePayment}
-                      value="cards"
+                      value="card"
                       name="payments"
                       type="radio"
-                      checked={paymentMethod === "cards"}
+                      checked={paymentMethod === "card"}
                       className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                     />
                     <label
-                      htmlFor="cards"
+                      htmlFor="card"
                       className="block text-sm font-medium leading-6 text-gray-900"
                     >
                       Card
@@ -318,12 +323,12 @@ export const Checkout = () => {
             <div className="mt-8 ">
               <div className="flow-root">
                 <ul role="list" className="-my-6 divide-y divide-gray-200">
-                  {items.map((product, idx) => (
-                    <li key={product.id} className="flex py-6">
+                  {items.map((item, idx) => (
+                    <li key={item.id} className="flex py-6">
                       <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                         <img
-                          src={product.thumbnail}
-                          alt={product.title}
+                          src={item.product.thumbnail}
+                          alt={item.product.title}
                           className="h-full w-full object-cover object-center"
                         />
                       </div>
@@ -332,12 +337,14 @@ export const Checkout = () => {
                         <div>
                           <div className="flex justify-between text-base font-medium text-gray-900">
                             <h3>
-                              <a href={product.href}>{product.title}</a>
+                              <a href={item.product.href}>
+                                {item.product.title}
+                              </a>
                             </h3>
-                            <p className="ml-4">{product.price}</p>
+                            <p className="ml-4">{item.product.price}</p>
                           </div>
                           <p className="mt-1 text-sm text-gray-500">
-                            {product.brand}
+                            {item.product.brand}
                           </p>
                         </div>
                         <div className="flex flex-1 items-end justify-between text-sm">
@@ -349,8 +356,8 @@ export const Checkout = () => {
                               Qty
                             </label>
                             <select
-                              onChange={(e) => handleQuantity(e, product)}
-                              value={product.quantity}
+                              onChange={(e) => handleQuantity(e, item)}
+                              value={item.product.quantity}
                             >
                               <option value="1">1</option>
                               <option value="2">2</option>
@@ -363,7 +370,7 @@ export const Checkout = () => {
 
                           <div className="flex">
                             <button
-                              onClick={(e) => handleRemove(e, product.id)}
+                              onClick={(e) => handleRemove(e, item.id)}
                               type="button"
                               className="font-medium text-indigo-600 hover:text-indigo-500"
                             >

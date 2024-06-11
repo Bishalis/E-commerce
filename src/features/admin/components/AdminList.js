@@ -1,22 +1,19 @@
 import React, { useEffect, Fragment, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
   StarIcon,
 } from "@heroicons/react/20/solid";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import {
-  fetchAllProductByFilterAsync,
+import { Pagination } from "../../common/Pagination";
+
+import {   fetchAllProductByFilterAsync,
   selectAllProducts,
   selectTotalItems,
   selectAllBrands,
   selectAllCategories,
   fetchAllBrandsAsync,
-  fetchAllCategoriesAsync,
-} from "../ProductListSlice";
-import { Pagination } from "../../common/Pagination";
+  fetchAllCategoriesAsync } from "../../product-list/ProductListSlice";
 
 import {
   ChevronDownIcon,
@@ -26,31 +23,8 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
-import { ITEMS_PER_PAGE, discountedPrice } from "../../../app/constants";
+import { ITEMS_PER_PAGE } from "../../../app/constants";
 
-// const items = [
-//   {
-//     id: 1,
-//     title: "Back End Developer",
-//     department: "Engineering",
-//     type: "Full-time",
-//     location: "Remote",
-//   },
-//   {
-//     id: 2,
-//     title: "Front End Developer",
-//     department: "Engineering",
-//     type: "Full-time",
-//     location: "Remote",
-//   },
-//   {
-//     id: 3,
-//     title: "User Interface Designer",
-//     department: "Design",
-//     type: "Full-time",
-//     location: "Remote",
-//   },
-// ];
 
 const sortOptions = [
   { name: "Best Rating", sort: "rating", order: "desc", current: false },
@@ -68,10 +42,12 @@ const sortOptions = [
   },
 ];
 
+
+
 function classNames(...classes) {
   return classes.filter(Boolean).join("");
 }
-export default function ProductList() {
+export default function AdminList() {
   const dispatch = useDispatch();
   const totalItems = useSelector(selectTotalItems);
   const brands = useSelector(selectAllBrands);
@@ -82,6 +58,7 @@ export default function ProductList() {
   const [page, setPage] = useState(1);
   const products = useSelector(selectAllProducts);
   const filters = [
+
     {
       id: "category",
       name: "Category",
@@ -91,7 +68,7 @@ export default function ProductList() {
       id: "brand",
       name: "Brand",
       options: brands,
-    },
+    }
   ];
   const handleFilter = (e, section, option) => {
     const newFilter = { ...filter };
@@ -112,7 +89,7 @@ export default function ProductList() {
   };
 
   const handleSort = (e, option) => {
-    const sort = { _sort: option.sort,_order: option.order  };
+    const sort = { _sort: option.sort ,_order:option.order};
     setSort(sort);
   };
 
@@ -122,7 +99,7 @@ export default function ProductList() {
 
   useEffect(() => {
     const pagination = { _page: page, _limit: ITEMS_PER_PAGE };
-    dispatch(fetchAllProductByFilterAsync({ filter, sort, pagination }));
+    dispatch(fetchAllProductByFilterAsync({ filter, sort, pagination ,admin:true}));
   }, [dispatch, filter, sort, page]);
 
   useEffect(() => {
@@ -130,14 +107,14 @@ export default function ProductList() {
   }, [totalItems, sort]);
 
   useEffect(() => {
-    dispatch(fetchAllBrandsAsync());
-    dispatch(fetchAllCategoriesAsync());
-  }, []);
+    dispatch(fetchAllBrandsAsync())
+    dispatch(fetchAllCategoriesAsync())
+  }, [])
 
   return (
-    <>
-      <div className="bg-white">
-        <div>
+    <div>
+      <div className="mx-0">
+        <div className="">
           {/* Mobile filter dialog */}
           <MobileFilter
             mobileFiltersOpen={mobileFiltersOpen}
@@ -231,9 +208,16 @@ export default function ProductList() {
                 <DesktopFilter handleFilter={handleFilter} filters={filters} />
 
                 {/* Product grid */}
-                <div className="lg:col-span-3">
-                  <ProductGrid products={products}></ProductGrid>
-                </div>
+                <div className="mt-6 flex items-center justify-end gap-x-6">
+                      <Link
+                      to={'/admin/product-form'}
+                        type="submit"
+                        className="rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      >
+                       Add Product
+                      </Link>
+                    </div>
+                <ProductGrid products={products} />
               </div>
             </section>
             {/* pagination section */}
@@ -247,7 +231,7 @@ export default function ProductList() {
           </main>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -255,7 +239,7 @@ function MobileFilter({
   mobileFiltersOpen,
   setMobileFiltersOpen,
   handleFilter,
-  filters,
+  filters
 }) {
   return (
     <Transition.Root show={mobileFiltersOpen} as={Fragment}>
@@ -301,6 +285,8 @@ function MobileFilter({
 
               {/* Filters */}
               <form className="mt-4 border-t border-gray-200">
+                <h3 className="sr-only">Categories</h3>
+
                 {filters.map((section) => (
                   <Disclosure
                     as="div"
@@ -339,13 +325,13 @@ function MobileFilter({
                                 <input
                                   id={`filter-mobile-${section.id}-${optionIdx}`}
                                   name={`${section.id}[]`}
-                                  // defaultValue={option.value}
+                                  defaultValue={option.value}
                                   type="checkbox"
-                                  // defaultChecked={option.checked}
+                                  defaultChecked={option.checked}
+                                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                   onChange={(e) =>
                                     handleFilter(e, section, option)
                                   }
-                                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                 />
                                 <label
                                   htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
@@ -370,65 +356,80 @@ function MobileFilter({
   );
 }
 
-function ProductGrid({ products, status }) {
+function ProductGrid({ products }) {
   return (
-    <div className="bg-white">
-      <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
-        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-          {products.map((product) => (
-            <Link to={`/product-detail/${product.id}`} key={product.id}>
-              <div className="group relative border-solid border-2 p-2 border-gray-200">
-                <div className="min-h-60 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
-                  <img
-                    src={product.thumbnail}
-                    alt={product.title}
-                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                  />
-                </div>
-                <div className="mt-4 flex justify-between">
-                  <div>
-                    <h3 className="text-sm text-gray-700">
-                      <div href={product.thumbnail}>
-                        <span aria-hidden="true" className="absolute inset-0" />
+    <div className="lg:col-span-3">
+      <div className="bg-white">
+      <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-full  lg:px-8">
+        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8 lg:max-w-full">
+            {products.map((product) => (
+              <Link to={`/product-detail/${product.id}`} key={product.id}>
+                <div
+                  key={product.id}
+                  className="group relative border-solid border-2 p-3 shadow-xl"
+                >
+                  <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+                    <img
+                      src={product.thumbnail}
+                      alt={product.title}
+                      className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                    />
+                  </div>
+                  <div className="mt-4 flex justify-between">
+                    <div>
+                      <p className="mt-1 text-sm text-gray-900 font-medium">
                         {product.title}
+                      </p>
+                      <div className="flex gap-1">
+                        <StarIcon className="h-5 w-6 inline" />
+                        <h3 className="text-sm text-gray-700">
+                          <div href={product.thumbnail}>
+                            <span
+                              aria-hidden="true"
+                              className="absolute inset-0"
+                            />
+                            {product.rating}
+                          </div>
+                        </h3>
                       </div>
-                    </h3>
-                    <p className="mt-1 text-sm text-gray-500">
-                      <StarIcon className="w-6 h-6 inline"></StarIcon>
-                      <span className=" align-bottom">{product.rating}</span>
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm block font-medium text-gray-900">
-                      ${discountedPrice(product)}
-                    </p>
-                    <p className="text-sm block line-through font-medium text-gray-400">
-                      ${product.price}
-                    </p>
+                    </div>
+                    <div>
+                      <p className="mt-1 text-sm text-gray-900 font-medium">
+                        ${product.price}
+                      </p>
+                      <p className="text-sm  text-gray-400 line-through">
+                        ${Math.round(
+                          product.price * (1 - product.discountPercentage / 100)
+                        )}
+                      </p>
+                    </div>
+                    {product.deleted &&
+                    <div>
+                      <p className="text-red">Product Deleted</p>
+                    </div>
+                    }
+                 
                   </div>
                 </div>
-                {product.deleted && (
-                  <div>
-                    <p className="text-sm text-red-400">product deleted</p>
-                  </div>
-                )}
-                {product.stock <= 0 && (
-                  <div>
-                    <p className="text-sm text-red-400">out of stock</p>
-                  </div>
-                )}
-              </div>
-            </Link>
-          ))}
+                   <div className="mt-5">
+                      <Link 
+                      to={`/admin/product-form/edit/${product.id}`}
+                      className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Edit</Link>
+                    </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
+
+
 function DesktopFilter({ handleFilter, filters }) {
   return (
-    <form className="hidden lg:block">
+    <div className="hidden lg:block">
       <h3 className="sr-only">Categories</h3>
       {filters.map((section) => (
         <Disclosure
@@ -481,6 +482,6 @@ function DesktopFilter({ handleFilter, filters }) {
           )}
         </Disclosure>
       ))}
-    </form>
+    </div>
   );
 }

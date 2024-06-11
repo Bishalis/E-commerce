@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
-import { incrementAsync, selectError, selectLoggedInUser } from "./authSlice";
+import { incrementAsync, selectError, selectloggedInUser } from "./authSlice";
 import { Link, Navigate } from "react-router-dom";
-import { checkUserAsync } from "./authSlice";
+import { loginUserAsync } from "./authSlice";
 
 export function Login() {
   // const count = useSelector(selectCount);
   const dispatch = useDispatch();
   const error = useSelector(selectError);
-  const user = useSelector(selectLoggedInUser);
+  const user = useSelector(selectloggedInUser);
   const {
     register,
     handleSubmit,
@@ -37,10 +37,9 @@ export function Login() {
             className="space-y-6"
             onSubmit={handleSubmit((data) => {
               dispatch(
-                checkUserAsync({
+                loginUserAsync({
                   email: data.email,
                   password: data.password,
-                  addresses:[],
                 })
               );
               console.log(data);
@@ -108,7 +107,7 @@ export function Login() {
                   <p className="text-red-500">{errors.password.message}</p>
                 )}
               </div>
-              {error && <p className="text-red-500">{error.message}</p>}
+              {error && <p className="text-red-500">{error || error.message}</p>}
             </div>
 
             <div>

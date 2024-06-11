@@ -1,23 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  fetchUserLoggedInOrderAsync,
   selectUserInfo,
-  selectUserOrders,
   updateUserAsync,
 } from "../UserSlice";
-import { selectLoggedInUser } from "../../auth/authSlice";
-import { Link, Navigate } from "react-router-dom";
-import { deleteItemAsync } from "../../Cart/CartSlice";
+import {Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 export function UserProfile() {
   const dispatch = useDispatch();
   const user = useSelector(selectUserInfo);
-  const orders = useSelector(selectUserOrders);
   const [selectedEditIndex, setSelectedEditIndex] = useState(-1);
-  const [showAddresssForm, setShowAddressForm] = useState(0);
-  const [paymentMethod, setPaymentMethod] = useState(false);
+  const [showAddresssForm, setShowAddressForm] = useState(false);
 
   const {
     register,
@@ -60,19 +54,27 @@ export function UserProfile() {
   return (
     <>
       {!user && <Navigate to={"/"} />}
-      <div>
-        <h1 className="text-4xl font-bold m-10">User Details</h1>
-        <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 bg-white">
+      <div  className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 bg-white mt-16 mb-10">
+
+        <h1 className="text-4xl font-bold m-10 max-w-7xl  lg:px-8 bg-white">User Details</h1>
+        
+        <h2 className=" font-semibold leading-7 text-gray-900  m-10 max-w-7xl   lg:px-8 bg-white text-3xl">
+               role: {user.role}
+       </h2>
+        <div className="mx-auto max-w-7xl lg:px-8 bg-white mt-16 mb-10">
           <button
             onClick={(e) => {
               setShowAddressForm(true);
               setSelectedEditIndex(-1);
             }}
             type="submit"
-            className="rounded-md bg-green-400 px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 my-7"
+            className="rounded-md bg-green-400  py-2 text-sm 
+            font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 
+            m-10 max-w-7xl  sm:px-6 lg:px-8 p-2"
           >
             Add Address
           </button>
+
           {selectedEditIndex ? (
             <form
               className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 bg-white mt-16 mb-10"
