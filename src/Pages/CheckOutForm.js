@@ -5,7 +5,7 @@ import {
   useElements
 } from "@stripe/react-stripe-js";
 import { useSelector } from "react-redux";
-import { selectcurrentOrder } from "../features/orders/OrdersSlice";
+import { selectCurrentOrder } from "../features/orders/OrdersSlice";
 
 export default function CheckoutForm() {
   const stripe = useStripe();
@@ -13,7 +13,8 @@ export default function CheckoutForm() {
  
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const currentOrder = useSelector(selectcurrentOrder)
+  const currentOrder = useSelector(selectCurrentOrder);
+
 
   useEffect(() => {
     if (!stripe) {

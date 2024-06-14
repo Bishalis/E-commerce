@@ -18,7 +18,7 @@ export function Cart() {
   const cartLoaded = useSelector(selectCartLoaded);
 
   const totalAmount = items.reduce(
-    (amount, item) => discountedPrice(item.product) * item.quantity +  amount,
+    (amount, item) => item.product.price * item.quantity +  amount,
     0
   );
   const totalItems = items.reduce((total, item) => item.quantity + total, 0);

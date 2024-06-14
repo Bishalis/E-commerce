@@ -9,7 +9,7 @@ import { selectUserInfo, updateUserAsync } from "../features/user/UserSlice";
 import {} from "../features/auth/authSlice";
 import {
   addOrderAsync,
-  selectcurrentOrder,
+  selectCurrentOrder,
 } from "../features/orders/OrdersSlice";
 import { discountedPrice } from "../app/constants";
 
@@ -40,7 +40,7 @@ export const Checkout = () => {
   const user = useSelector(selectUserInfo);
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [selectedAddress, setSelectedAddresses] = useState(null);
-  const currentOrder = useSelector(selectcurrentOrder);
+  const currentOrder = useSelector(selectCurrentOrder);
 
   const handleAddress = (e) => {
     setSelectedAddresses(user.addresses[e.target.value]);

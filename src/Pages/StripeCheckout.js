@@ -4,7 +4,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "./CheckOutForm";
 import "./Stripe.css";
 import { useDispatch, useSelector } from "react-redux";
-import {  resetOrder, selectcurrentOrder } from "../features/orders/OrdersSlice";
+import {  resetOrder, selectCurrentOrder } from "../features/orders/OrdersSlice";
 import { resetCardAsync } from "../features/Cart/CartSlice";
 
 
@@ -15,8 +15,8 @@ const stripePromise = loadStripe("pk_test_51P8WZiFecWcDo3p340d05PsGh4L9XtGe8nZoi
 
 export default function StripeCheckout() {
   const [clientSecret, setClientSecret] = useState("");
-  const currentOrder = useSelector(selectcurrentOrder)
-const dispatch = useDispatch();
+  const currentOrder = useSelector(selectCurrentOrder)
+ const dispatch = useDispatch();
 
 
   useEffect(() => {
@@ -28,8 +28,6 @@ const dispatch = useDispatch();
       })
         .then((res) => res.json())
         .then((data) => setClientSecret(data.clientSecret))
-        dispatch(resetCardAsync())
-        dispatch(resetOrder()) 
     }, []);
 
     
